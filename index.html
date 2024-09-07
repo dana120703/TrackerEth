@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="no">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethereum Adresse Søk</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Søk etter Ethereum Adresse</h1>
+        <div class="mb-3">
+            <label for="address" class="form-label">Ethereum Adresse:</label>
+            <input type="text" class="form-control" id="address" required>
+        </div>
+        <button onclick="searchAddress()" class="btn btn-primary">Søk</button>
+
+        <div id="result" class="mt-5" style="display: none;">
+            <h2>Resultat for <span id="resultAddress"></span></h2>
+            <p><strong>Balanse:</strong> <span id="balance"></span></p>
+
+            <h3 class="mt-4">Transaksjoner</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Dato</th>
+                        <th>Fra</th>
+                        <th>Til</th>
+                        <th>Verdi</th>
+                    </tr>
+                </thead>
+                <tbody id="transactions">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function searchAddress() {
+            const address = document.getElementById('address').value;
+            fetch('/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ address: address }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('resultAddress').textContent = data.address;
+                    document.getElementById('balance').textContent = data.balance;
+
+                    const transactionsTable = document.getElementById('transactions');
+                    transactionsTable.innerHTML = '';
+                    data.transactions.forEach(tx => {
+                        const row = transactionsTable.insertRow();
+                        row.insertCell(0).textContent = tx.date;
+                        row.insertCell(1).textContent = tx.from;
+                        row.insertCell(2).textContent = tx.to;
+                        row.insertCell(3).textContent = tx.value;
+                    });
+
+                    document.getElementById('result').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Det oppstod en feil under søket. Vennligst prøv igjen.');
+                });
+        }
+    </script>
+</body>
+
+</html>
