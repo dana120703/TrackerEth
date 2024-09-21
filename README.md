@@ -72,7 +72,7 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## Contact
 
-If you want to contact me, you can reach me at `your.email@example.com`.
+If you want to contact me, you can reach me at `danaabarzinje@gmail.com`.
 
 ## Acknowledgements
 
